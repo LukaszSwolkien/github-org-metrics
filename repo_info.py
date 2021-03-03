@@ -18,6 +18,26 @@ class RepoInfo:
     def is_private(self):
         return self.gh_r.private
 
+    def is_fork(self):
+        return self.gh_r.fork
+
+    def get_about(self):
+        return self.gh_r.description
+
+    def forks_count(self):
+        return self.gh_r.forks_count
+
+    def get_parent_name(self):
+        if self.is_fork() and self.get_parent():
+           return self.gh_r.parent.full_name
+        return ""
+
+    def get_parent(self):
+        return self.gh_r.parent
+
+    def wathers_count(self):
+        return self.gh_r.watchers_count
+
     def get_pushed_date(self):
         return self.gh_r.pushed_at
 
@@ -71,6 +91,9 @@ class RepoInfo:
         for k,v in keyword2team.items():
             if self.name.find(k) != -1:
                 return v
+        lang2team = self.config['lang2team']
+        if self.language in lang2team:
+            return lang2team[self.language]
         return ""
 
     def get_potential_archive(self):
@@ -79,6 +102,12 @@ class RepoInfo:
         duration = today - last_chance_date
         return duration.days > 365
     
+    def get_status(self):
+        statuses = self.config['status']
+        if self.name in statuses:
+            return statuses[self.name]
+        return ""
+
     name = property(get_name)
     url = property(get_html_url)
     language = property(get_lang)
@@ -89,3 +118,7 @@ class RepoInfo:
     team = property(get_team)
     potential_team = property(get_potential_team)
     potential_archive = property(get_potential_archive)
+    status = property(get_status)
+    forks = property(get_parent_name)
+    about =property(get_about)
+

@@ -29,9 +29,13 @@ load_dotenv()
 def write_file(filename, data_list):
     with open(filename, "w", encoding="utf-8") as csvfile:
         csv_writer = csv.writer(csvfile, delimiter=',')
-        csv_writer.writerow(["Repository", "Language", "Created", "Last modified", "Private", "Stars", "Team", "Potential archive"])
+        csv_writer.writerow(
+            ["Repository", "Language", "Created", "Last modified", "Private", "Stars", "Fork", "Parent", "Team", "Status", "Potential archive", "About"]
+        )
         for d in data_list:
-            csv_writer.writerow([d.url, d.language, d.created, d.last_modified, d.is_private(), d.stars, d.team, d.potential_archive])
+            csv_writer.writerow(
+            [d.url, d.language, d.created, d.last_modified, d.is_private(), d.stars, d.is_fork(), d.forks, d.team, d.status, d.potential_archive, d.about]
+        )
 
 
 def get_repos(gh, org):
@@ -41,6 +45,7 @@ def get_repos(gh, org):
         if o.login == org:
             repos = o.get_repos()
             print(f'number of repos {repos.totalCount}')
+
             for r in repos:
                 rep.append(RepoInfo(r, config))
     return rep
